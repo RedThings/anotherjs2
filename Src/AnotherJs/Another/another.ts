@@ -1,5 +1,21 @@
 ﻿// ReSharper disable InconsistentNaming
 
+/// <reference path="../../packages/React.TypeScript.DefinitelyTyped.0.1.12/react.d.ts" />
+
+/*STATIC*/
+var $another = {
+    addLayout: undefined,
+    addView:undefined,
+    layouts: {},
+    views: {}
+};
+$another.addLayout = (name, cb) => {
+    $another.layouts[name] = cb;
+};
+$another.addView = (name, cb) => {
+    $another.views[name] = cb;
+};
+
 /*HELPERS*/
 var $anotherAppsCollection = {};
 
@@ -12,6 +28,7 @@ interface IAnother {
     addDependency(name: string);
     getService(name: string);
     getAppService(name: string);
+    render(containerId: string, layoutName: string);
 }
 
 class another implements IAnother {
@@ -55,6 +72,12 @@ class another implements IAnother {
     getAppService(name: string) {
         return this.$serviceProviders.get(name);
     }
+    render(containerId: string, layoutName: string) {
+        // get layout
+        var found = $another.layouts[layoutName];
+        if (!found) throw "Cannot find layout name '" + layoutName + "'. Make sure you add it by calling $another.addLayout";
+        ReactDOM.render(React.createElement(found()), document.getElementById(containerId));
+    }
 }
 
 /*SERVICE*/
@@ -68,7 +91,7 @@ class ServiceProviderCollection {
 
     private _providers = {};
 
-    constructor(private _appName: string){}
+    constructor(private _appName: string) { }
 
     add(name: string, provider: IServiceProvider): void {
         this._providers[name] = provider;

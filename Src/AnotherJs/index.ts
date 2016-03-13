@@ -57,7 +57,7 @@ var actual = gotService1.getString();
 assertAreEqual(expected, actual);
 
 // add service which uses service
-var depService = function(dep1) {
+var depService = function (dep1) {
     var _dep1 = dep1;
     this.getDep = () => {
         var output = _dep1;
@@ -75,6 +75,20 @@ actual = gotDepService.getDep().getString();
 assertAreEqual(expected, actual);
 
 // create home controller
-var homeController = indexApp.addService("homeController", () => {
-    return {};
+class homeController {
+
+    index() {
+        console.log("in index action");
+    }
+    aboot() { // this won't get called!
+        console.log("in about action");
+    }
+
+}
+indexApp.addService("homeController", () => {
+    return new homeController();
 });
+
+// run spa
+indexApp.render("container", "MainLayout");
+

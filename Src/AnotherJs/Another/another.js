@@ -1,4 +1,18 @@
 // ReSharper disable InconsistentNaming
+/// <reference path="../../packages/React.TypeScript.DefinitelyTyped.0.1.12/react.d.ts" />
+/*STATIC*/
+var $another = {
+    addLayout: undefined,
+    addView: undefined,
+    layouts: {},
+    views: {}
+};
+$another.addLayout = function (name, cb) {
+    $another.layouts[name] = cb;
+};
+$another.addView = function (name, cb) {
+    $another.views[name] = cb;
+};
 /*HELPERS*/
 var $anotherAppsCollection = {};
 var another = (function () {
@@ -41,6 +55,13 @@ var another = (function () {
     };
     another.prototype.getAppService = function (name) {
         return this.$serviceProviders.get(name);
+    };
+    another.prototype.render = function (containerId, layoutName) {
+        // get layout
+        var found = $another.layouts[layoutName];
+        if (!found)
+            throw "Cannot find layout name '" + layoutName + "'. Make sure you add it by calling $another.addLayout";
+        ReactDOM.render(React.createElement(found()), document.getElementById(containerId));
     };
     return another;
 }());

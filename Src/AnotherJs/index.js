@@ -73,6 +73,19 @@ expected = "Hello world";
 actual = gotDepService.getDep().getString();
 assertAreEqual(expected, actual);
 // create home controller
-var homeController = indexApp.addService("homeController", function () {
-    return {};
+var homeController = (function () {
+    function homeController() {
+    }
+    homeController.prototype.index = function () {
+        console.log("in index action");
+    };
+    homeController.prototype.aboot = function () {
+        console.log("in about action");
+    };
+    return homeController;
+}());
+indexApp.addService("homeController", function () {
+    return new homeController();
 });
+// run spa
+indexApp.render("container", "MainLayout");
